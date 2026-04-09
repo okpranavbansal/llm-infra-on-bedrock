@@ -1,4 +1,9 @@
 # llm-infra-on-bedrock
+> Production-grade infrastructure for deploying LLM-powered microservices on AWS Bedrock, ECS Fargate, and Confluent Cloud Kafka.
+
+![AWS Bedrock](https://img.shields.io/badge/AWS%20Bedrock-232F3E?style=flat&logo=amazonaws&logoColor=white) ![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=flat&logo=terraform&logoColor=white) ![Kafka](https://img.shields.io/badge/Apache%20Kafka-231F20?style=flat&logo=apachekafka&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+
+![AWS Bedrock](https://img.shields.io/badge/AWS%20Bedrock-232F3E?style=flat&logo=amazonaws&logoColor=white) ![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=flat&logo=terraform&logoColor=white) ![Kafka](https://img.shields.io/badge/Apache%20Kafka-231F20?style=flat&logo=apachekafka&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
 
 Production-grade infrastructure for deploying LLM-powered microservices on **AWS Bedrock**, orchestrated with **ECS Fargate** and **Confluent Cloud Kafka** for async inference pipelines.
 
@@ -126,3 +131,10 @@ terraform init && terraform apply
 - **Bedrock over SageMaker:** Bedrock provides managed inference with no model deployment overhead. See [bedrock-vs-sagemaker.md](docs/bedrock-vs-sagemaker.md).
 - **Kafka for async inference:** Long-running LLM calls (5-30s) are decoupled via Kafka so the API gateway can return a request ID immediately, with the response delivered via SSE or webhook.
 - **Fargate Spot for non-streaming services:** Background processing services (audit log writers, embedding indexers) run on Spot. Streaming response services run On-Demand.
+
+## Author
+
+**Pranav Bansal** — AI Infrastructure & SRE Engineer
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/okpranavbansal)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/okpranavbansal)
