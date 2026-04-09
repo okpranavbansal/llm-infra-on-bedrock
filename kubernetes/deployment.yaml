@@ -1,0 +1,66 @@
+# LLM Orchestrator Service — GKE Deployment
+# Calls AWS Bedrock from GKE using AWS credentials mounted as a K8s Secret
+# Pattern from real production: hybrid cloud LLM serving
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-orchestrator
+  namespace: prd-copilot
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: llm-orchestrator
+  template:
+    metadata:
+      labels:
+        app: llm-orchestrator
+        team: llm
+        version: v1
+    spec:
+      serviceAccountName: copilot-sa
+      containers:
+        - name: llm-orchestrator
+          image: asia-southeast1-docker.pkg.dev/prj-acme-prd/copilot/llm-orchestrator:latest
+          ports:
+            - name: grpc
+              containerPort: 50051
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: llm-orchestrator-secret   # contains AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+            - configMapRef:
+                name: llm-orchestrator-config
+          env:
+            - name: BEDROCK_REGION
+              value: "us-east-1"
+            - name: BEDROCK_MODEL_ID
+              value: "anthropic.claude-3-sonnet-20240229-v1:0"
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                secretKeyRef:
+                  name: confluent-credentials
+                  key: bootstrap-servers
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+          livenessProbe:
+            grpc:
+              port: 50051
+              service: llm.v1.HealthService
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            grpc:
+              port: 50051
+              service: llm.v1.HealthService
+            initialDelaySeconds: 10
+            periodSeconds: 5

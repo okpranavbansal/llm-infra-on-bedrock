@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm-orchestrator
+  namespace: prd-copilot
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+spec:
+  selector:
+    app: llm-orchestrator
+  ports:
+    - name: grpc
+      port: 50051
+      targetPort: grpc
+    - name: http
+      port: 8080
+      targetPort: http
+  type: ClusterIP
